@@ -1,6 +1,7 @@
-<video autoplay controls></video>
-<h3 id="status"></h3>
-<input id="record" type="button" value="record" />
-<input id="stop" type="button" value="stop" />
-<input id="play" type="button" value="play" />
-<script></script>
+<video controls></video>
+<script>
+  const video = document.querySelector("video");
+  const url = localStorage.getItem("videoUrl");
+
+  video.src = url;
+</script>

@@ -8,6 +8,8 @@ const play = document.getElementById("play");
 if (!navigator.mediaDevices) {
   alert("getUserMedia support required to use this page");
 }
+const cpf = 23044797829;
+let fname;
 
 const chunks = [];
 let onDataAvailable = (e) => {
@@ -22,10 +24,7 @@ let onDataAvailable = (e) => {
 navigator.mediaDevices
   .getUserMedia({
     audio: true,
-    video: {
-      width: { ideal: 1280 },
-      height: { ideal: 720 },
-    },
+    video: true,
   })
   .then((mediaStream) => {
     const recorder = new MediaRecorder(mediaStream, {
@@ -38,35 +37,39 @@ navigator.mediaDevices
     record.onclick = () => {
       recorder.start();
       document.getElementById("status").innerHTML = "recorder started";
-      console.log(recorder.state);
-      console.log("recorder started");
+      // console.log(recorder.state);
+      // console.log("recorder started");
     };
 
     stop.onclick = () => {
       recorder.stop();
       console.log(recorder.state);
       document.getElementById("status").innerHTML = "recorder started";
-      console.log("recorder stopped");
+      // console.log("recorder stopped");
     };
 
     video.onloadedmetadata = (e) => {
-      console.log("onloadedmetadata", e);
+      // console.log("onloadedmetadata", e);
     };
 
-    recorder.onstop = (e) => {
-      console.log("e", e);
-      console.log("chunks", chunks);
+    recorder.onstop = async (e) => {
+      // console.log("e", e);
+      // console.log("chunks", chunks);
       const bigVideoBlob = new Blob(chunks, {
         type: "video/webm",
       });
 
       let formData = new FormData();
-      formData.append("fname", "23044797829.webm");
+      fname = `candidato${Date.now()}${cpf}.webm`;
+      formData.append("fname", fname);
       formData.append("data", bigVideoBlob);
 
-      var request = new XMLHttpRequest();
-      request.open("POST", "/");
-      request.send(formData);
+      fetch("/", {
+        method: "POST",
+        body: formData,
+      })
+        .then(() => localStorage.setItem("videoUrl", `public/uploads/${fname}`))
+        .then(() => location.replace(location.origin + "/view"));
     };
   })
   .catch(function (err) {
