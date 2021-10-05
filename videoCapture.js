@@ -4,6 +4,7 @@
 const record = document.getElementById("record");
 const stop = document.getElementById("stop");
 const play = document.getElementById("play");
+const controls = document.querySelector(".controls");
 
 if (!navigator.mediaDevices) {
   alert("getUserMedia support required to use this page");
@@ -12,6 +13,7 @@ const cpf = 23044797829;
 let fname;
 
 const chunks = [];
+let superBuffer;
 let onDataAvailable = (e) => {
   if (e.data.size > 0) {
     chunks.push(e.data);
@@ -32,11 +34,14 @@ navigator.mediaDevices
     });
     recorder.ondataavailable = onDataAvailable;
     const video = document.querySelector("video");
-    video.srcObject = mediaStream;
 
     record.onclick = () => {
       recorder.start();
       document.getElementById("status").innerHTML = "recorder started";
+      video.srcObject = mediaStream;
+      video.play();
+      superBuffer = undefined;
+      window.URL.revokeObjectURL(superBuffer);
       // console.log(recorder.state);
       // console.log("recorder started");
     };
@@ -45,6 +50,13 @@ navigator.mediaDevices
       recorder.stop();
       console.log(recorder.state);
       document.getElementById("status").innerHTML = "recorder started";
+      video.srcObject = undefined;
+
+      setTimeout(() => {
+        superBuffer = new Blob(chunks);
+        video.src = window.URL.createObjectURL(superBuffer);
+        controls.style.visibility = "visible";
+      }, 100);
       // console.log("recorder stopped");
     };
 
@@ -69,7 +81,11 @@ navigator.mediaDevices
         body: formData,
       })
         .then(() => localStorage.setItem("videoUrl", `public/uploads/${fname}`))
-        .then(() => location.replace(location.origin + "/view"));
+        .then(() => {
+          // location.reload();
+          // video.src = fname;
+        });
+      // .then(() => location.replace(location.origin + "/view"));
     };
   })
   .catch(function (err) {

@@ -1,11 +1,81 @@
-<video autoplay controls></video>
-<h3 id="status"></h3>
-<input id="record" type="button" value="record" />
-<input id="stop" type="button" value="stop" />
-<input id="play" type="button" value="play" />
-<script
-  src="https://code.jquery.com/jquery-3.1.1.min.js"
-  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
-  crossorigin="anonymous"
-></script>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .controls {
+        visibility: hidden;
+        opacity: 0.5;
+        width: 400px;
+        border-radius: 10px;
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        margin-left: -200px;
+        background-color: black;
+        box-shadow: 3px 3px 5px black;
+        transition: 1s all;
+        display: flex;
+      }
+
+      .player:hover .controls,
+      player:focus .controls {
+        opacity: 1;
+      }
+
+      .timer {
+        line-height: 38px;
+        font-size: 10px;
+        font-family: monospace;
+        text-shadow: 1px 1px 0px black;
+        color: white;
+        flex: 5;
+        position: relative;
+      }
+
+      .timer div {
+        position: absolute;
+        background-color: rgba(255, 255, 255, 0.2);
+        left: 0;
+        top: 0;
+        width: 0;
+        height: 38px;
+        z-index: 2;
+      }
+
+      .timer span {
+        position: absolute;
+        z-index: 3;
+        left: 19px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="player">
+      <video controls></video>
+      <div class="controls">
+        <button class="play" data-icon="P" aria-label="play pause toggle">
+          play
+        </button>
+        <button class="stop" data-icon="S" aria-label="stop">stop</button>
+        <div class="timer">
+          <div></div>
+          <span aria-label="timer">00:00</span>
+        </div>
+        <button class="rwd" data-icon="B" aria-label="rewind">back</button>
+        <button class="fwd" data-icon="F" aria-label="fast forward">
+          next
+        </button>
+      </div>
+      <h3 id="status"></h3>
+      <input id="record" type="button" value="record" />
+      <input id="stop" type="button" value="stop" />
+    </div>
+  </body>
+</html>
+
 <script src="videoCapture.js"></script>
+<script src="playerScripts.js"></script>
